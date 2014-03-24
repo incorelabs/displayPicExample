@@ -4,6 +4,7 @@
         <title>File System Example</title>
 
         <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
         
         <script type="text/javascript" charset="utf-8">  
        // Wait for Cordova to load  
@@ -25,7 +26,7 @@
                                 fileEntry.remove();  
                                 fileTransfer.download(  
                                            "http://www.incorelabs.com/clubApp/img/pic1.jpg",  
-                                           sPath + "theFile.pdf",  
+                                           sPath + "pic1.jpg",  
                                            function(theFile) {  
                                            console.log("download complete: " + theFile.toURI());  
                                            showLink(theFile.toURI());  
@@ -48,7 +49,8 @@
        aElem.setAttribute("target", "_blank");  
        aElem.setAttribute("href", url);  
        aElem.appendChild(document.createTextNode("Ready! Click To Open."))  
-       divEl.appendChild(aElem);  
+       divEl.appendChild(aElem);
+       $("#photos").append("<img src='"+url+"'>");
      }  
      function fail(evt) {  
        console.log(evt.target.error.code);  
@@ -68,6 +70,13 @@
     <div id="deviceready">
 
     </div>
+    <div id="photos"></div>
+
+    <style>
+        img {
+            max-width: 200px;
+        }
+    </style>
 
   </body>
 </html>
