@@ -44,13 +44,17 @@
      }  
      function showLink(url){  
        alert(url);  
-       var divEl = document.getElementById("deviceready");  
-       var aElem = document.createElement("a");  
+       var divEl = document.getElementById("deviceready");
+       var aElem = document.createElement("a");
        aElem.setAttribute("target", "_blank");  
-       aElem.setAttribute("href", url);  
+       aElem.setAttribute("href", url);
        aElem.appendChild(document.createTextNode("Ready! Click To Open."))  
        divEl.appendChild(aElem);
-       $("#photos").append("<img src='"+url+"'>");
+
+       var imgEl = document.getElementById("photos");
+       var imgElem = document.createElement("img");
+       imgElem.setAttribute("src", url);
+       imgEl.appendChild(imgElem);       
      }  
      function fail(evt) {  
        console.log(evt.target.error.code);  
