@@ -4,6 +4,7 @@
     <title>File System Example</title>
 
     <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" charset="utf-8">
     var fileSystemName;
     var fileSystemRootName;
@@ -21,8 +22,10 @@
     function onFileSystemSuccess(fileSystem) {
         console.log(fileSystem.name);
         fileSystemName = fileSystem.name;
+        $("#fileSystemName").append(fileSystem.name);
         console.log(fileSystem.root.name);
         fileSystemRootName = fileSystem.root.name;
+        $("#fileSystemRootName").append(fileSystem.root.name);
     }
 
     function fail(error) {
@@ -34,5 +37,12 @@
   <body>
     <h1>Example</h1>
     <p>File System</p>
+    <div id="fileSystemName">
+
+    </div>
+    <br/>
+    <div id="fileSystemRootName">
+
+    </div>
   </body>
 </html>
