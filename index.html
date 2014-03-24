@@ -1,86 +1,52 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
-    <head>
-        <title>File System Example</title>
+	<head>
+		<meta name="viewport" content="width=320; user-scalable=no" />
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>Image Download Demo</title>
+		<script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//Global instance of DirectoryEntry for our data
+			var DATADIR;
 
-        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-        <script type="text/javascript" src="js/jquery.min.js"></script>
-        
-        <script type="text/javascript" charset="utf-8">  
-       // Wait for Cordova to load  
-    document.addEventListener("deviceready", onDeviceReady, false);  
-    // Cordova is ready  
-    function onDeviceReady() {  
-      alert("Going to start download");  
-      downloadFile();  
-    }  
-     function downloadFile(){  
-       window.requestFileSystem(  
-                    LocalFileSystem.PERSISTENT, 0,  
-                    function onFileSystemSuccess(fileSystem) {  
-                    fileSystem.root.getFile(  
-                                "dummy.html", {create: true, exclusive: false},  
-                                function gotFileEntry(fileEntry){  
-                                var sPath = fileEntry.fullPath.replace("dummy.html","");  
-                                var fileTransfer = new FileTransfer();  
-                                fileEntry.remove();  
-                                fileTransfer.download(  
-                                           "http://www.incorelabs.com/clubApp/img/pic1.jpg",  
-                                           sPath + "pic1.jpg",  
-                                           function(theFile) {  
-                                           console.log("download complete: " + theFile.toURI());  
-                                           showLink(theFile.toURI());  
-                                           },  
-                                           function(error) {  
-                                           console.log("download error source " + error.source);  
-                                           console.log("download error target " + error.target);  
-                                           console.log("upload error code: " + error.code);  
-                                           }  
-                                           );  
-                                },  
-                                fail);  
-                    },  
-                    fail);  
-     }  
-     function showLink(url){  
-       alert(url);  
-       var divEl = document.getElementById("deviceready");
-       var aElem = document.createElement("a");
-       aElem.setAttribute("target", "_blank");  
-       aElem.setAttribute("href", url);
-       aElem.appendChild(document.createTextNode("Ready! Click To Open."))  
-       divEl.appendChild(aElem);
+			//Loaded my file system, now let's get a directory entry for where I'll store my crap    
+			function onFSSuccess(fileSystem) {
+    			fileSystem.root.getDirectory("Android/data/com.incorelabs.displayPicExample",{create:true},gotDir,onError);
+			}
 
-       var imgEl = document.getElementById("photos");
-       var imgElem = document.createElement("img");
-       imgElem.setAttribute("src", url);
-       imgEl.appendChild(imgElem);       
-     }  
-     function fail(evt) {  
-       console.log(evt.target.error.code);  
-     }  
- </script>  
-    </head>
-  <body>
-    <h1>Example</h1>
-    <p>File System</p>
-    <div id="fileSystemName">
+			//The directory entry callback
+			function gotDir(d){
+			    DATADIR = d;
+			    var reader = DATADIR.createReader();
+			    reader.readEntries(gotFiles,onError);
+			}
 
-    </div>
-    <br/>
-    <div id="fileSystemRootName">
+			//Result of reading my directory
+			function gotFiles(entries) {
+    			console.log("The dir has "+entries.length+" entries.");
+				for (var i=0; i<entries.length; i++) {
+					console.log(entries[i].name+' '+entries[i].isDirectory);
+				}
+			}
 
-    </div>
-    <div id="deviceready">
+			function onError(e){
+			    console.log("ERROR");
+			    console.log(JSON.stringify(e));
+			}
 
-    </div>
-    <div id="photos"></div>
+			function onDeviceReady() {
+			    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFSSuccess, null);    
+			}
 
-    <style>
-        img {
-            max-width: 200px;
-        }
-    </style>
+			function init() {
+				document.addEventListener("deviceready", onDeviceReady, true);
+			}
+		</script>
+	</head>
+	<body onload="init()" >
+		<h2>Image Download Demo</h2>
 
-  </body>
+		<div id="status"></div>
+
+	</body>
 </html>
