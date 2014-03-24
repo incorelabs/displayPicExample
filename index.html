@@ -1,39 +1,62 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>File System Example</title>
+    <head>
+        <title>File System Example</title>
 
-    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-    <script type="text/javascript" src="jquery.min.js"></script>
-    <script type="text/javascript" charset="utf-8">
-    var fileSystemName;
-    var fileSystemRootName;
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            // Wait for Cordova to load  
+            document.addEventListener("deviceready", onDeviceReady, false);  
+            // Cordova is ready  
+            function onDeviceReady() {  
+                alert("Going to start download");  
+                downloadFile();  
+            }  
 
-    // Wait for device API libraries to load
-    //
-    document.addEventListener("deviceready", onDeviceReady, false);
-
-    // device APIs are available
-    //
-    function onDeviceReady() {
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
-    }
-
-    function onFileSystemSuccess(fileSystem) {
-        console.log(fileSystem.name);
-        fileSystemName = fileSystem.name;
-        $("#fileSystemName").append(fileSystem.name);
-        console.log(fileSystem.root.name);
-        fileSystemRootName = fileSystem.root.name;
-        $("#fileSystemRootName").append(fileSystem.root.name);
-    }
-
-    function fail(error) {
-        console.log(error.code);
-    }
-
-    </script>
-  </head>
+            function downloadFile(){  
+                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0,  
+                    function onFileSystemSuccess(fileSystem) {
+                        fileSystem.root.getFile("dummy.html", {create: true, exclusive: false},
+                                function gotFileEntry(fileEntry){
+                                    var sPath = fileEntry.fullPath.replace("dummy.html","");
+                                    var fileTransfer = new FileTransfer();
+                                    fileTransfereEntry.remove();
+                                    fileTransfer.download(
+                                        "http://www.w3.org/2011/web-apps-ws/papers/Nitobi.pdf",
+                                        sPath + "theFile.pdf",  
+                                        function(theFile) {  
+                                            console.log("download complete: " + theFile.toURI());  
+                                            showLink(theFile.toURI());  
+                                        },  
+                                        function(error) {  
+                                            console.log("download error source " + error.source);  
+                                            console.log("download error target " + error.target);  
+                                            console.log("upload error code: " + error.code);  
+                                        }
+                                    );
+                                },
+                            fail
+                        );
+                    },
+                    fail
+                );
+            }
+            function showLink(url){  
+                alert(url);  
+                var divEl = document.getElementById("deviceready");  
+                var aElem = document.createElement("a");  
+                aElem.setAttribute("target", "_blank");  
+                aElem.setAttribute("href", url);
+                aElem.appendChild(document.createTextNode("Ready! Click To Open."))  
+                divEl.appendChild(aElem);  
+            }  
+            
+            function fail(evt) {  
+                console.log(evt.target.error.code);  
+            }
+        </script>
+    </head>
   <body>
     <h1>Example</h1>
     <p>File System</p>
